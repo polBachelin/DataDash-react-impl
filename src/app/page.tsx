@@ -1,95 +1,109 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client';
+import ChartComponent from '@/components/Chart';
+import ChartRenderer from '@/components/ChartRenderer';
+import { PlusOutlined } from '@ant-design/icons';
+import { Alert, Button, Spin, Typography } from "antd";
+import Link from "next/link";
+import React from 'react';
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import styles from './page.module.css';
+
+interface ChartDataItem {
+	name: string;
+	value: number;
+}
+
+
+const chartData: ChartDataItem[]  = 
+[{
+  name: 'Bar 1',
+  value: 10
+},
+{
+  name: 'Bar 2',
+  value: 14
+},
+{
+  name: 'Bar 3',
+  value: 40
+}]
+
+const chartObject= {
+
+}
+
+interface Filter {
+  member: string;
+  operator: string;
+  values: string[];
+}
+
+interface TimeDimension {
+  dimension: string;
+  date_range: string[];
+  granularity: string;
+}
+
+interface Query {
+  measures: string[];
+  dimensions: string[];
+  filters: Filter[];
+  time_dimensions: TimeDimension[];
+  limit: number;
+  offset: number;
+  order: [string, string][];
+}
+
+interface VisState {
+  query: Query;
+  chartType: string;
+}
+
+const defaultVis: VisState = {query: 
+  {
+    measures: ["Sale.count"],
+    dimensions: ["Status_name.name"],
+    filters: [{
+      member: "Sale.amount",
+      operator: "gt",
+      values: ["5000"]
+    }],
+    time_dimensions: [],
+    limit: 10000,
+    offset: 0,
+    order: [["Sale.amount", "asc"]]}, 
+  chartType: "line"}
 
 export default function Home() {
-  return (
+  const [data, setData] = React.useState<any[]>(["data", "data"]);
+  const [loading, isLoading] = React.useState<boolean>(false);
+
+  if (loading) {
+    return <Spin/>;
+  }
+  
+  const Empty = () => (
+    <div
+      style={{
+        textAlign: "center",
+        padding: 12
+      }}
+    >
+      <h2>There are no charts on this dashboard</h2>
+      <Link href="/explore">
+        <Button type="primary" size="large">
+          <PlusOutlined />
+          Add chart
+        </Button>
+      </Link>
+    </div>
+  );
+
+  return data.length ? (
     <main className={styles.main}>
       <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+        <ChartRenderer vizState={defaultVis} chartHeight={100}/>
       </div>
     </main>
-  )
+  ) : <Empty/>;
 }

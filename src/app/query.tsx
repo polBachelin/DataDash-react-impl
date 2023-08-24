@@ -1,0 +1,68 @@
+'use client';
+import axios from 'axios';
+import 'chart.js/auto';
+import { Chart as ChartJS } from 'chart.js/auto';
+import React, { useEffect, useState } from 'react';
+import { Bar, Chart } from 'react-chartjs-2';
+
+interface Filter {
+  member: string;
+  operator: string;
+  values: string[];
+}
+
+interface TimeDimension {
+  dimension: string;
+  date_range: string[];
+  granularity: string;
+}
+
+interface Query {
+  measures: string[];
+  dimensions: string[];
+  filters: Filter[];
+  time_dimensions: TimeDimension[];
+  limit: number;
+  offset: number;
+  order: [string, string][];
+}
+
+interface SaleData {
+	status_name: string;
+	count: number;
+}
+
+interface ChartObject {
+	query: Query;
+	chartType: string;
+	chartName: string;
+}
+
+export const fetchData = async () => {
+	const query: Query = {
+		measures: ["Sale.count"],
+		dimensions: ["Sale.amount"],
+		filters: [{
+			member: "Sale.amount",
+			operator: "gt",
+			values: ["5000"]
+		}],
+		time_dimensions: [{
+			"dimension": "Sale.date",
+			"date_range": ["2019-07-04", "2019-09-22"],
+			"granularity": "month"
+	 
+		}],
+		limit: 10000,
+		offset: 0,
+		order: [["Sale.amount", "asc"]]
+	};
+	try {
+		const response = await axios.post('http://localhost:8080/api/v1/query', query);
+		const data: any[] = await response.data;
+		console.log(data)
+		return data
+	} catch (error) {
+		console.error("Error fetching data:", error);
+	}
+};
