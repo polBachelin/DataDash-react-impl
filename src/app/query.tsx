@@ -21,7 +21,7 @@ interface Query {
   measures: string[];
   dimensions: string[];
   filters: Filter[];
-  time_dimensions: TimeDimension[];
+  timeDimensions: TimeDimension[];
   limit: number;
   offset: number;
   order: [string, string][];
@@ -38,25 +38,7 @@ interface ChartObject {
 	chartName: string;
 }
 
-export const fetchData = async () => {
-	const query: Query = {
-		measures: ["Sale.count"],
-		dimensions: ["Sale.amount"],
-		filters: [{
-			member: "Sale.amount",
-			operator: "gt",
-			values: ["5000"]
-		}],
-		time_dimensions: [{
-			"dimension": "Sale.date",
-			"date_range": ["2019-07-04", "2019-09-22"],
-			"granularity": "month"
-	 
-		}],
-		limit: 10000,
-		offset: 0,
-		order: [["Sale.amount", "asc"]]
-	};
+export const fetchData = async (query: Query) => {
 	try {
 		const response = await axios.post('http://localhost:8080/api/v1/query', query);
 		const data: any[] = await response.data;

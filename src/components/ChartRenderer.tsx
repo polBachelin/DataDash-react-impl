@@ -192,104 +192,13 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ vizState, chartHeight }) 
 		}
 	})
 	function sendQuery(query: any): void {
-		fetchData().then((data) => {
-			console.log("DATA IS : ", data);
-			console.log(new ResultSet(data).seriesNames())
-			setRenderProps({error: null, isLoading: false, resultSet: new ResultSet(loadResponse)})
+		fetchData(query).then((data) => {
+			setRenderProps({error: null, isLoading: false, resultSet: new ResultSet(data)})
 		}).catch((err) => {
 			console.log(err);
 		})
 	}
-
-	console.log(component)
-	console.log(renderProps)
 	return component && renderChart(component)({ height: chartHeight, ...renderProps });
 };
-
-
-
-
-
-
-
-const loadResponse = ({
-	queryType: 'regularQuery',
-	results: [
-	  {
-		query: {
-		  measures: ['Orders.count'],
-		  timeDimensions: [
-			{
-			  dimension: 'Orders.ts',
-			  granularity: 'day',
-			  dateRange: ['2020-08-01T00:00:00.000', '2020-08-07T23:59:59.999'],
-			},
-		  ],
-		  filters: [],
-		  timezone: 'UTC',
-		  order: [],
-		  dimensions: [],
-		},
-		data: [
-		  {
-			'Orders.ts.day': '2020-08-01T00:00:00.000',
-			'Orders.ts': '2020-08-01T00:00:00.000',
-			'Orders.count': 1,
-		  },
-		  {
-			'Orders.ts.day': '2020-08-02T00:00:00.000',
-			'Orders.ts': '2020-08-02T00:00:00.000',
-			'Orders.count': 2,
-		  },
-		],
-		annotation: {
-		  measures: {
-			'Orders.count': {
-			  title: 'Orders Count',
-			  shortTitle: 'Count',
-			  type: 'number',
-			  drillMembers: ['Orders.id', 'Orders.title'],
-			  drillMembersGrouped: {
-				measures: [],
-				dimensions: ['Orders.id', 'Orders.title'],
-			  },
-			},
-		  },
-		  dimensions: {},
-		  segments: {},
-		  timeDimensions: {
-			'Orders.ts.day': {
-			  title: 'Orders Ts',
-			  shortTitle: 'Ts',
-			  type: 'time',
-			},
-			'Orders.ts': { title: 'Orders Ts', shortTitle: 'Ts', type: 'time' },
-		  },
-		},
-	  },
-	],
-	pivotQuery: {
-	  measures: ['Orders.count'],
-	  timeDimensions: [
-		{
-		  dimension: 'Orders.ts',
-		  granularity: 'day',
-		  dateRange: ['2020-08-01T00:00:00.000', '2020-08-07T23:59:59.999'],
-		},
-	  ],
-	  filters: [],
-	  timezone: 'UTC',
-	  order: [],
-	  dimensions: [],
-	},
-  });
-
-
-type QueryResult = {
-	error: Error | null;
-	isLoading: boolean;
-	resultSet: ResultSet | null;
-}
-
 
 export default ChartRenderer;

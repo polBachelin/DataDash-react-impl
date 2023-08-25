@@ -48,7 +48,7 @@ interface Query {
   measures: string[];
   dimensions: string[];
   filters: Filter[];
-  time_dimensions: TimeDimension[];
+  timeDimensions: TimeDimension[];
   limit: number;
   offset: number;
   order: [string, string][];
@@ -63,16 +63,12 @@ const defaultVis: VisState = {query:
   {
     measures: ["Sale.count"],
     dimensions: ["Status_name.name"],
-    filters: [{
-      member: "Sale.amount",
-      operator: "gt",
-      values: ["5000"]
-    }],
-    time_dimensions: [],
+    filters: [],
+    timeDimensions: [],
     limit: 10000,
     offset: 0,
-    order: [["Sale.amount", "asc"]]}, 
-  chartType: "line"}
+    order: []}, 
+  chartType: "bar"}
 
 export default function Home() {
   const [data, setData] = React.useState<any[]>(["data", "data"]);
