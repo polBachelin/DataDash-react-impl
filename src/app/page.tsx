@@ -19,7 +19,7 @@ interface Filter {
 
 interface TimeDimension {
   dimension: string;
-  date_range: string[];
+  dateRange: string[];
   granularity: string;
 }
 
@@ -38,27 +38,68 @@ interface VisState {
   chartType: string;
 }
 
-const defaultVis: VisState = {query: 
-  {
+const defaultVis: VisState = 
+{
+  query: {
     measures: ["Sale.count"],
     dimensions: ["Status_name.name"],
     filters: [],
     timeDimensions: [],
     limit: 10000,
     offset: 0,
-    order: []}, 
-  chartType: "bar"}
+    order: []
+  }, 
+  chartType: "bar"
+}
 
-  const defaultVisLine: VisState = {query: 
-    {
+const defaultVisLine: VisState = 
+  {
+    query: {
       measures: ["Sale.count"],
-      dimensions: ["Status_name.name"],
+      dimensions: ["Product.name"],
       filters: [],
       timeDimensions: [],
       limit: 10000,
       offset: 0,
-      order: []}, 
-    chartType: "line"}
+      order: []
+    }, 
+    chartType: "line"
+}
+
+const defaultVisArea: VisState = 
+  {
+    query: {
+      measures: ["Sale.count"],
+      dimensions: [],
+      filters: [],
+      timeDimensions: [{
+        dimension: "Sale.date",
+        dateRange: ["2019-04-01", "2019-07-01"],
+        granularity: "month"
+    }],
+      limit: 10000,
+      offset: 0,
+      order: []
+    }, 
+    chartType: "area"
+}
+
+const defaultVisPie: VisState = 
+  {
+    query: {
+      measures: ["Sale.count"],
+      dimensions: ["Country.name"],
+      filters: [],
+      timeDimensions: [],
+      limit: 10000,
+      offset: 0,
+      order: []
+    }, 
+    chartType: "pie"
+}
+
+
+
 const defaultLayout = (i: any) => ({
     x: i.x || 0,
     y: i.y || 0,
@@ -87,7 +128,7 @@ const l2: Layout = {
   i: "another",
   x: 12,
   y: 8,
-  w: 6,
+  w: 12,
   h: 8
 }
 
@@ -100,18 +141,24 @@ const dashItem: DashboardItem = {
 }
 
 const dashItem2: DashboardItem = {
-  layout: '{\"i\":\"another\",\"x\":12,\"y\":8,\"w\":6,\"h\":8}',
+  layout: '{\"i\":\"another\",\"x\":12,\"y\":8,\"w\":12,\"h\":8}',
   vizState: JSON.stringify(defaultVisLine),
   id: "secondItem",
-  name: "Sales count bar chart"
+  name: "Sales count line chart"
 }
-const defaultDash: Array<DashboardItem> = [dashItem, dashItem2]
+
+const dashItem3: DashboardItem = {
+  layout: '{\"i\":\"another\",\"x\":24,\"y\":0,\"w\":12,\"h\":8}',
+  vizState: JSON.stringify(defaultVisArea),
+  id: "thirdItem",
+  name: "Sales count area chart"
+}
+const defaultDash: Array<DashboardItem> = [dashItem, dashItem2, dashItem3]
 
 interface DashboardData {
   dashboardItems: Array<DashboardItem>
 }
 
-//todo change to JSON parse when you retrieve the data from backend
 const deserializeItem = (i: any) => ({
   ...i,
   layout: JSON.parse(i.layout) || {},
@@ -130,7 +177,7 @@ export default function Home() {
   const dashboardItem = (item: DashboardItem) => (
     <div key={item.id} data-grid={defaultLayout(item.layout)}>
       <DashboardItem key={item.id} title={item.name}>
-        <ChartRenderer vizState={item.vizState} chartHeight={100}/>
+        <ChartRenderer vizState={item.vizState} chartHeight={150}/>
       </DashboardItem>
     </div>
   );

@@ -68,7 +68,7 @@ const Dashboard: React.FC<DashboardProps> = ({ children, dashboardItems }) => {
 			onResizeStart={() => setIsDragging(true)}
 			onResizeStop={() => setIsDragging(false)}
 			cols={24}
-			rowHeight={40}
+			rowHeight={20}
 			onLayoutChange={onLayoutChange}
 		>
 		{children}
