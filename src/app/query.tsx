@@ -40,7 +40,7 @@ interface ChartObject {
 
 export const fetchData = async (query: Query) => {
 	try {
-		const response = await axios.post('http://localhost:8080/api/v1/query', query);
+		const response = await axios.post('http://localhost:8080/query', query);
 		const data: any[] = await response.data;
 		console.log(data)
 		return data
